@@ -42,6 +42,8 @@ scripts/diy-part2.sh                     feeds 安装后、defconfig 前执行
 - OpenClash：`vernesong/OpenClash`
 - EasyTier：`EasyTier/luci-app-easytier`，包含 `luci-app-easytier` 和 `easytier`
 - Material 3 主题：`KawaiiHachimi/luci-theme-material3`
+- Design 主题：`0x676e67/luci-theme-design`
+- Aurora 主题：`eamonxg/luci-theme-aurora`
 - ttyd：`luci-app-ttyd` 和 `ttyd`
 - Turbo ACC：`luci-app-turboacc`
 - iStore：`linkease/istore`，包名 `luci-app-store`
@@ -49,6 +51,8 @@ scripts/diy-part2.sh                     feeds 安装后、defconfig 前执行
 - Docker：`luci-app-dockerman`、`docker`、`dockerd` 和 `docker-compose`
 - 集客 AC：`laipeng668/luci-app-gecoosac`
 - UPnP：`luci-app-upnp` 和 `miniupnpd`
+- Watchcat：`luci-app-watchcat`
+- QEMU Guest Agent：`qemu-ga`
 
 ## 编译其他设备
 

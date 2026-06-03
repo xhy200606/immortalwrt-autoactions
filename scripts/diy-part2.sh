@@ -15,10 +15,12 @@ sed -i "s|DISTRIB_REVISION='.*'|DISTRIB_REVISION='R$(date +%Y.%m.%d)'|g" package
 echo "DISTRIB_SOURCECODE='immortalwrt'" >>package/base-files/files/etc/openwrt_release
 
 # Add custom packages.
-rm -rf package/luci-app-openclash package/easytier package/luci-theme-material3 package/luci-app-gecoosac
+rm -rf package/luci-app-openclash package/easytier package/luci-theme-material3 package/luci-theme-design package/luci-theme-aurora package/luci-app-gecoosac
 git clone --depth 1 https://github.com/vernesong/OpenClash.git package/luci-app-openclash
 git clone --depth 1 https://github.com/EasyTier/luci-app-easytier.git package/easytier
 git clone --depth 1 https://github.com/KawaiiHachimi/luci-theme-material3.git package/luci-theme-material3
+git clone --depth 1 https://github.com/0x676e67/luci-theme-design.git package/luci-theme-design
+git clone --depth 1 https://github.com/eamonxg/luci-theme-aurora.git package/luci-theme-aurora
 git clone --depth 1 https://github.com/laipeng668/luci-app-gecoosac.git package/luci-app-gecoosac
 
 # Set bypass router LAN IP.
