@@ -30,6 +30,15 @@ jobs:
       contents: read
 
     steps:
+      - name: Free disk space
+        uses: easimon/maximize-build-space@v10
+        with:
+          root-reserve-mb: 20480
+          swap-size-mb: 4096
+          remove-dotnet: true
+          remove-android: true
+          remove-haskell: true
+
       - name: Checkout
         uses: actions/checkout@v4
 
