@@ -44,6 +44,10 @@ scripts/diy-part2.sh                     feeds 安装后、defconfig 前执行
 - ttyd：`luci-app-ttyd` 和 `ttyd`
 - Turbo ACC：`luci-app-turboacc`
 - iStore：`linkease/istore`，包名 `luci-app-store`
+- Tailscale：`luci-app-tailscale-community` 和 `tailscale`
+- Docker：`luci-app-dockerman`、`docker`、`dockerd` 和 `docker-compose`
+- 集客 AC：`laipeng668/luci-app-gecoosac`
+- UPnP：`luci-app-upnp` 和 `miniupnpd`
 
 ## 编译其他设备
 
