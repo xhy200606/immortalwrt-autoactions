@@ -41,15 +41,6 @@ jobs:
           echo "CONFIG_FILE=${{ env.CONFIG_DIR }}/${config}" >> "$GITHUB_ENV"
           echo "BUILD_DATE=$(date +'%Y%m%d-%H%M')" >> "$GITHUB_ENV"
 
-      - name: Free disk space
-        uses: easimon/maximize-build-space@v10
-        with:
-          root-reserve-mb: 8192
-          swap-size-mb: 4096
-          remove-dotnet: true
-          remove-android: true
-          remove-haskell: true
-
       - name: Install dependencies
         timeout-minutes: 20
         env:
@@ -68,6 +59,15 @@ jobs:
             python3-ply python3-docutils qemu-utils re2c rsync scons squashfs-tools \
             subversion swig texinfo uglifyjs unzip vim wget xmlto xxd zlib1g-dev
           sudo apt-get clean
+
+      - name: Free disk space
+        uses: easimon/maximize-build-space@v10
+        with:
+          root-reserve-mb: 20480
+          swap-size-mb: 4096
+          remove-dotnet: true
+          remove-android: true
+          remove-haskell: true
 
       - name: Clone ImmortalWrt
         run: |
