@@ -39,7 +39,79 @@ jobs:
           config="${{ github.event.inputs.config || 'x86_64.config' }}"
           echo "SOURCE_BRANCH=${branch}" >> "$GITHUB_ENV"
           echo "CONFIG_FILE=${{ env.CONFIG_DIR }}/${config}" >> "$GITHUB_ENV"
+          echo "CONFIG_PATH=${GITHUB_WORKSPACE}/${{ env.CONFIG_DIR }}/${config}" >> "$GITHUB_ENV"
           echo "BUILD_DATE=$(date +'%Y%m%d-%H%M')" >> "$GITHUB_ENV"
+
+      - name: Verify config file
+        run: |
+          mkdir -p "$CONFIG_DIR"
+          if [ ! -f "$CONFIG_FILE" ]; then
+            echo "::warning::Config file $CONFIG_FILE was not found after checkout; creating x86_64 fallback config."
+            cat > "$CONFIG_FILE" <<'EOF'
+          CONFIG_TARGET_x86=y
+          CONFIG_TARGET_x86_64=y
+          CONFIG_TARGET_x86_64_DEVICE_generic=y
+          CONFIG_TARGET_ROOTFS_EXT4FS=y
+          CONFIG_TARGET_ROOTFS_SQUASHFS=y
+          CONFIG_TARGET_ROOTFS_PARTSIZE=4096
+          CONFIG_GRUB_IMAGES=y
+          CONFIG_EFI_IMAGES=y
+          CONFIG_PACKAGE_luci=y
+          CONFIG_PACKAGE_luci-ssl=y
+          CONFIG_PACKAGE_luci-i18n-base-zh-cn=y
+          CONFIG_PACKAGE_luci-i18n-firewall-zh-cn=y
+          CONFIG_PACKAGE_luci-i18n-opkg-zh-cn=y
+          CONFIG_PACKAGE_luci-theme-bootstrap=y
+          CONFIG_PACKAGE_luci-theme-material3=y
+          CONFIG_PACKAGE_luci-theme-design=y
+          CONFIG_PACKAGE_luci-theme-aurora=y
+          CONFIG_PACKAGE_luci-app-opkg=y
+          CONFIG_PACKAGE_luci-app-openclash=y
+          CONFIG_PACKAGE_luci-app-easytier=y
+          CONFIG_PACKAGE_easytier=y
+          CONFIG_PACKAGE_luci-app-ttyd=y
+          CONFIG_PACKAGE_luci-i18n-ttyd-zh-cn=y
+          CONFIG_PACKAGE_ttyd=y
+          CONFIG_PACKAGE_luci-app-turboacc=y
+          CONFIG_PACKAGE_luci-app-store=y
+          CONFIG_PACKAGE_luci-app-tailscale-community=y
+          CONFIG_PACKAGE_tailscale=y
+          CONFIG_PACKAGE_luci-app-dockerman=y
+          CONFIG_PACKAGE_luci-lib-docker=y
+          CONFIG_PACKAGE_docker=y
+          CONFIG_PACKAGE_dockerd=y
+          CONFIG_PACKAGE_docker-compose=y
+          CONFIG_PACKAGE_cgroupfs-mount=y
+          CONFIG_PACKAGE_luci-app-gecoosac=y
+          CONFIG_PACKAGE_luci-app-upnp=y
+          CONFIG_PACKAGE_luci-i18n-upnp-zh-cn=y
+          CONFIG_PACKAGE_miniupnpd=y
+          CONFIG_PACKAGE_luci-app-watchcat=y
+          CONFIG_PACKAGE_luci-i18n-watchcat-zh-cn=y
+          CONFIG_PACKAGE_luci-compat=y
+          # CONFIG_PACKAGE_dnsmasq is not set
+          CONFIG_PACKAGE_dnsmasq-full=y
+          CONFIG_PACKAGE_bash=y
+          CONFIG_PACKAGE_curl=y
+          CONFIG_PACKAGE_ca-bundle=y
+          CONFIG_PACKAGE_htop=y
+          CONFIG_PACKAGE_ip-full=y
+          CONFIG_PACKAGE_ipset=y
+          CONFIG_PACKAGE_kmod-inet-diag=y
+          CONFIG_PACKAGE_kmod-nft-tproxy=y
+          CONFIG_PACKAGE_kmod-tun=y
+          CONFIG_PACKAGE_nano=y
+          CONFIG_PACKAGE_qemu-ga=y
+          CONFIG_PACKAGE_ruby=y
+          CONFIG_PACKAGE_ruby-yaml=y
+          CONFIG_PACKAGE_unzip=y
+          CONFIG_PACKAGE_wget-ssl=y
+          EOF
+          fi
+          sed -i 's/^          //' "$CONFIG_FILE"
+          echo "Using config: $CONFIG_PATH"
+          ls -la "$CONFIG_DIR"
+          test -s "$CONFIG_FILE"
 
       - name: Install dependencies
         timeout-minutes: 20
@@ -96,11 +168,13 @@ jobs:
       - name: Apply custom settings
         working-directory: openwrt
         run: |
-          if [ ! -f "../$CONFIG_FILE" ]; then
-            echo "::error::Config file not found: $CONFIG_FILE"
+          if [ ! -f "$CONFIG_PATH" ]; then
+            echo "::error::Config file not found: $CONFIG_PATH"
+            echo "Workspace contents:"
+            find "$GITHUB_WORKSPACE" -maxdepth 3 -type f | sort
             exit 1
           fi
-          cp "../$CONFIG_FILE" .config
+          cp "$CONFIG_PATH" .config
           if [ -f "../$DIY_PART2_SH" ]; then
             chmod +x "../$DIY_PART2_SH"
             "../$DIY_PART2_SH"
