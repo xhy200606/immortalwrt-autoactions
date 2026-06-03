@@ -35,6 +35,7 @@ scripts/diy-part2.sh                     feeds 安装后、defconfig 前执行
 - 登录密码：`root`
 - LAN 网关/DNS：`192.168.1.1`
 - LAN DHCP：默认关闭，避免和主路由冲突
+- x86_64 根分区大小：`4096 MB`
 
 默认集成插件：
 
