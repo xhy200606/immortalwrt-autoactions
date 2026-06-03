@@ -36,6 +36,15 @@ scripts/diy-part2.sh                     feeds 安装后、defconfig 前执行
 - LAN 网关/DNS：`192.168.1.1`
 - LAN DHCP：默认关闭，避免和主路由冲突
 
+默认集成插件：
+
+- OpenClash：`vernesong/OpenClash`
+- EasyTier：`EasyTier/luci-app-easytier`，包含 `luci-app-easytier` 和 `easytier`
+- Material 3 主题：`KawaiiHachimi/luci-theme-material3`
+- ttyd：`luci-app-ttyd` 和 `ttyd`
+- Turbo ACC：`luci-app-turboacc`
+- iStore：`linkease/istore`，包名 `luci-app-store`
+
 ## 编译其他设备
 
 先在本地 ImmortalWrt 源码中生成对应设备的 `.config`：

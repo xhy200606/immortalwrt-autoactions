@@ -14,6 +14,12 @@ sed -i 's|^root:[^:]*:|root:$1$fShxqZPK$GIpLusJDY9SqOOD0k8IEL.:|' package/base-f
 sed -i "s|DISTRIB_REVISION='.*'|DISTRIB_REVISION='R$(date +%Y.%m.%d)'|g" package/base-files/files/etc/openwrt_release
 echo "DISTRIB_SOURCECODE='immortalwrt'" >>package/base-files/files/etc/openwrt_release
 
+# Add custom packages.
+rm -rf package/luci-app-openclash package/easytier package/luci-theme-material3
+git clone --depth 1 https://github.com/vernesong/OpenClash.git package/luci-app-openclash
+git clone --depth 1 https://github.com/EasyTier/luci-app-easytier.git package/easytier
+git clone --depth 1 https://github.com/KawaiiHachimi/luci-theme-material3.git package/luci-theme-material3
+
 # Set bypass router LAN IP.
 sed -i 's/192.168.1.1/192.168.1.2/g' package/base-files/files/bin/config_generate
 
