@@ -1,0 +1,137 @@
+name: Build ImmortalWrt
+
+on:
+  workflow_dispatch:
+    inputs:
+      config:
+        description: "Config file under configs/"
+        required: true
+        default: "x86_64.config"
+      source_branch:
+        description: "ImmortalWrt branch"
+        required: true
+        default: "openwrt-25.12"
+  schedule:
+    - cron: "0 18 * * 5"
+
+env:
+  REPO_URL: https://github.com/immortalwrt/immortalwrt
+  REPO_BRANCH: openwrt-25.12
+  FEEDS_CONF: feeds.conf.default
+  CONFIG_DIR: configs
+  DIY_PART1_SH: scripts/diy-part1.sh
+  DIY_PART2_SH: scripts/diy-part2.sh
+  TZ: Asia/Shanghai
+
+jobs:
+  build:
+    runs-on: ubuntu-24.04
+    permissions:
+      contents: read
+
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: Set build variables
+        run: |
+          branch="${{ github.event.inputs.source_branch || env.REPO_BRANCH }}"
+          config="${{ github.event.inputs.config || 'x86_64.config' }}"
+          echo "SOURCE_BRANCH=${branch}" >> "$GITHUB_ENV"
+          echo "CONFIG_FILE=${{ env.CONFIG_DIR }}/${config}" >> "$GITHUB_ENV"
+          echo "BUILD_DATE=$(date +'%Y%m%d-%H%M')" >> "$GITHUB_ENV"
+
+      - name: Free disk space
+        uses: easimon/maximize-build-space@v10
+        with:
+          root-reserve-mb: 8192
+          swap-size-mb: 4096
+          remove-dotnet: true
+          remove-android: true
+          remove-haskell: true
+
+      - name: Install dependencies
+        run: |
+          sudo apt-get update
+          sudo apt-get install -y \
+            ack antlr3 asciidoc autoconf automake autopoint binutils bison \
+            build-essential bzip2 ccache clang cmake cpio curl device-tree-compiler \
+            ecj fastjar flex gawk gettext gcc-multilib g++-multilib git gperf \
+            haveged help2man intltool libc6-dev-i386 libelf-dev libglib2.0-dev \
+            libgmp3-dev libltdl-dev libmpc-dev libmpfr-dev libncurses5-dev \
+            libncursesw5-dev libreadline-dev libssl-dev libtool lrzsz mkisofs \
+            msmtp ninja-build p7zip p7zip-full patch pkgconf python3 python3-pip \
+            python3-ply python3-docutils qemu-utils re2c rsync scons squashfs-tools \
+            subversion swig texinfo uglifyjs upx-ucl unzip vim wget xmlto xxd zlib1g-dev
+
+      - name: Clone ImmortalWrt
+        run: |
+          git clone --depth 1 --branch "$SOURCE_BRANCH" "$REPO_URL" openwrt
+
+      - name: Load custom feeds
+        working-directory: openwrt
+        run: |
+          if [ -f "../$DIY_PART1_SH" ]; then
+            chmod +x "../$DIY_PART1_SH"
+            "../$DIY_PART1_SH"
+          fi
+
+      - name: Update and install feeds
+        working-directory: openwrt
+        run: |
+          ./scripts/feeds update -a
+          ./scripts/feeds install -a
+
+      - name: Apply custom settings
+        working-directory: openwrt
+        run: |
+          if [ ! -f "../$CONFIG_FILE" ]; then
+            echo "::error::Config file not found: $CONFIG_FILE"
+            exit 1
+          fi
+          cp "../$CONFIG_FILE" .config
+          if [ -f "../$DIY_PART2_SH" ]; then
+            chmod +x "../$DIY_PART2_SH"
+            "../$DIY_PART2_SH"
+          fi
+          make defconfig
+
+      - name: Download package sources
+        working-directory: openwrt
+        run: |
+          make download -j"$(nproc)"
+          find dl -size -1024c -exec ls -l {} \;
+          find dl -size -1024c -exec rm -f {} \;
+
+      - name: Compile firmware
+        id: compile
+        working-directory: openwrt
+        run: |
+          make -j"$(nproc)" || make -j1 V=s
+
+      - name: Prepare artifact
+        if: always()
+        run: |
+          mkdir -p artifact/firmware artifact/logs
+          if [ -d openwrt/bin/targets ]; then
+            find openwrt/bin/targets -type f \
+              \( -name "*.bin" -o -name "*.img" -o -name "*.img.gz" -o -name "*.itb" -o -name "*.ubi" -o -name "*.manifest" -o -name "*.buildinfo" -o -name "sha256sums" \) \
+              -exec cp -v {} artifact/firmware/ \;
+          fi
+          cp -v openwrt/.config artifact/logs/config.build || true
+
+      - name: Upload firmware
+        if: steps.compile.outcome == 'success'
+        uses: actions/upload-artifact@v4
+        with:
+          name: immortalwrt-${{ github.event.inputs.source_branch || env.REPO_BRANCH }}-${{ github.run_number }}
+          path: artifact/firmware
+          retention-days: 14
+
+      - name: Upload logs
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: build-logs-${{ github.run_number }}
+          path: artifact/logs
+          retention-days: 7
