@@ -2,3 +2,4 @@ openwrt/
 artifact/
 *.log
 .DS_Store
+configs/immortalwrt-25.12.config

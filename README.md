@@ -23,10 +23,18 @@
 
 ```text
 .github/workflows/build-immortalwrt.yml  GitHub Actions 编译流程
-configs/x86_64.config                    默认 x86_64 示例配置
+configs/x86_64.config                    x86_64 旁路由配置
 scripts/diy-part1.sh                     feeds 更新前执行
 scripts/diy-part2.sh                     feeds 安装后、defconfig 前执行
 ```
+
+默认配置用于 x86_64 设备旁路由：
+
+- Web 管理地址：`192.168.1.2`
+- 登录账号：`root`
+- 登录密码：`root`
+- LAN 网关/DNS：`192.168.1.1`
+- LAN DHCP：默认关闭，避免和主路由冲突
 
 ## 编译其他设备
 
@@ -59,7 +67,7 @@ echo "src-git helloworld https://github.com/fw876/helloworld" >> feeds.conf.defa
 修改默认 IP：编辑 `scripts/diy-part2.sh`。
 
 ```bash
-sed -i 's/192.168.1.1/192.168.2.1/g' package/base-files/files/bin/config_generate
+sed -i 's/192.168.1.1/192.168.1.2/g' package/base-files/files/bin/config_generate
 ```
 
 添加软件包：编辑对应的 `.config`，例如：
