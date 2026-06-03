@@ -47,6 +47,12 @@ jobs:
           DEBIAN_FRONTEND: noninteractive
         run: |
           sudo systemctl stop apt-daily.service apt-daily-upgrade.service apt-daily.timer apt-daily-upgrade.timer || true
+          df -h
+          sudo rm -rf /usr/share/dotnet /usr/local/lib/android /opt/ghc "$AGENT_TOOLSDIRECTORY"
+          sudo rm -f /etc/apt/sources.list.d/google-chrome.list /etc/apt/sources.list.d/azure-cli.list /etc/apt/sources.list.d/microsoft-prod.list
+          sudo rm -rf /var/lib/apt/lists/*
+          echo 'Acquire::Languages "none";' | sudo tee /etc/apt/apt.conf.d/99no-translations
+          sudo apt-get clean
           sudo apt-get -o DPkg::Lock::Timeout=120 update
           sudo apt-get -o DPkg::Lock::Timeout=120 install -y --no-install-recommends \
             ack antlr3 asciidoc autoconf automake autopoint binutils bison \
