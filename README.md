@@ -48,7 +48,7 @@ scripts/diy-part2.sh                     feeds 安装后、defconfig 前执行
 - Turbo ACC：`luci-app-turboacc`
 - iStore：`linkease/istore`，包名 `luci-app-store`
 - Tailscale：`luci-app-tailscale-community` 和 `tailscale`
-- Docker：`luci-app-dockerman`、`docker`、`dockerd` 和 `docker-compose`
+- Docker：`luci-app-dockerman`、`docker`、`dockerd`，暂不内置 `docker-compose` 以降低 GitHub Actions 磁盘占用
 - 集客 AC：`laipeng668/luci-app-gecoosac`
 - UPnP：`luci-app-upnp` 和 `miniupnpd`
 - Watchcat：`luci-app-watchcat`

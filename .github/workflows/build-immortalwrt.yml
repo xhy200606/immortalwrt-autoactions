@@ -33,7 +33,7 @@ jobs:
       - name: Free disk space
         uses: easimon/maximize-build-space@v10
         with:
-          root-reserve-mb: 20480
+          root-reserve-mb: 8192
           swap-size-mb: 4096
           remove-dotnet: true
           remove-android: true
@@ -89,7 +89,7 @@ jobs:
           CONFIG_PACKAGE_luci-lib-docker=y
           CONFIG_PACKAGE_docker=y
           CONFIG_PACKAGE_dockerd=y
-          CONFIG_PACKAGE_docker-compose=y
+          # CONFIG_PACKAGE_docker-compose is not set
           CONFIG_PACKAGE_cgroupfs-mount=y
           CONFIG_PACKAGE_luci-app-gecoosac=y
           CONFIG_PACKAGE_luci-app-upnp=y
@@ -191,9 +191,18 @@ jobs:
 
       - name: Compile firmware
         id: compile
+        timeout-minutes: 360
         working-directory: openwrt
         run: |
-          make -j"$(nproc)" || make -j1 V=s
+          df -h
+          du -sh dl staging_dir build_dir tmp 2>/dev/null || true
+          make -j2 || {
+            status="$?"
+            echo "::warning::Parallel build failed with status ${status}; collecting disk usage before serial retry."
+            df -h
+            du -h --max-depth=2 build_dir staging_dir tmp 2>/dev/null | sort -h | tail -n 80 || true
+            make -j1 V=s
+          }
 
       - name: Prepare artifact
         if: always()
