@@ -74,6 +74,8 @@ jobs:
           CONFIG_PACKAGE_luci-theme-material3=y
           CONFIG_PACKAGE_luci-theme-design=y
           CONFIG_PACKAGE_luci-theme-aurora=y
+          CONFIG_PACKAGE_luci-theme-argon=y
+          CONFIG_PACKAGE_luci-app-argon-config=y
           CONFIG_PACKAGE_luci-app-opkg=y
           CONFIG_PACKAGE_luci-app-openclash=y
           CONFIG_PACKAGE_luci-app-easytier=y
@@ -85,6 +87,9 @@ jobs:
           CONFIG_PACKAGE_luci-app-store=y
           CONFIG_PACKAGE_luci-app-tailscale-community=y
           CONFIG_PACKAGE_tailscale=y
+          CONFIG_PACKAGE_luci-app-smartdns=y
+          CONFIG_PACKAGE_luci-i18n-smartdns-zh-cn=y
+          CONFIG_PACKAGE_smartdns=y
           CONFIG_PACKAGE_luci-app-gecoosac=y
           CONFIG_PACKAGE_luci-app-upnp=y
           CONFIG_PACKAGE_luci-i18n-upnp-zh-cn=y

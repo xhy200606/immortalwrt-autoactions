@@ -44,14 +44,19 @@ scripts/diy-part2.sh                     feeds 安装后、defconfig 前执行
 - Material 3 主题：`KawaiiHachimi/luci-theme-material3`
 - Design 主题：`0x676e67/luci-theme-design`
 - Aurora 主题：`eamonxg/luci-theme-aurora`
+- Argon 主题：`jerrykuku/luci-theme-argon`
+- Argon 配置：`jerrykuku/luci-app-argon-config`
 - ttyd：`luci-app-ttyd` 和 `ttyd`
 - Turbo ACC：`luci-app-turboacc`
 - iStore：`linkease/istore`，包名 `luci-app-store`
 - Tailscale：`luci-app-tailscale-community` 和 `tailscale`
+- SmartDNS：`luci-app-smartdns` 和 `smartdns`
 - 集客 AC：`laipeng668/luci-app-gecoosac`
 - UPnP：`luci-app-upnp` 和 `miniupnpd`
 - Watchcat：`luci-app-watchcat`
 - QEMU Guest Agent：`qemu-ga`
+
+> Turbo ACC 在 `openwrt-25.12` 上如果执行 `make defconfig` 后没有保留，通常说明当前 feeds 中没有可用包或依赖不兼容。不要直接套旧版 Turbo ACC 补丁脚本，避免替换 `firewall4`、`nftables`、`libnftnl` 后造成编译或运行问题。
 
 ## 编译其他设备
 
