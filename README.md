@@ -59,7 +59,7 @@ scripts/diy-part2.sh                     feeds 安装后、defconfig 前执行
 - PassWall：`luci-app-passwall`，启用 `Xray`、`SingBox` 和 `V2ray Geodata`
 - UPnP：`luci-app-upnp` 和 `miniupnpd-nftables`
 - Watchcat：`luci-app-watchcat`
-- vnStat：`luci-app-vnstat` 和 `vnstat`
+- vnStat：`luci-app-vnstat2`、`vnstat2` 和 `vnstati2`
 - QEMU Guest Agent：`qemu-ga`
 
 > Turbo ACC 使用 `mufeng05/turboacc` 的 `add_turboacc.sh` 接入，会按内核版本复制补丁和包。`firewall4` 环境下建议使用 Flow Offloading；Full Cone NAT 选择兼容模式，不建议在 `firewall4` 下启用高性能 Broadcom 模式。
