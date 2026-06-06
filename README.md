@@ -53,7 +53,9 @@ scripts/diy-part2.sh                     feeds 安装后、defconfig 前执行
 - SmartDNS：`luci-app-smartdns` 和 `smartdns`
 - 集客 AC：`laipeng668/luci-app-gecoosac`
 - Diskman：`luci-app-diskman`
-- Filebrowser：`luci-app-filebrowser`
+- 文件管理器：`luci-app-filemanager`
+- MosDNS：`sbwml/luci-app-mosdns`，包含 `luci-app-mosdns` 和 `mosdns`
+- PassWall：`luci-app-passwall`，启用 `Xray`、`SingBox` 和 `V2ray Geodata`
 - UPnP：`luci-app-upnp` 和 `miniupnpd`
 - Watchcat：`luci-app-watchcat`
 - QEMU Guest Agent：`qemu-ga`

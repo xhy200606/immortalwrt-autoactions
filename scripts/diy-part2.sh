@@ -20,6 +20,13 @@ git clone --depth 1 https://github.com/mufeng05/turboacc.git package/turboacc-so
 bash package/turboacc-source/add_turboacc.sh
 rm -rf package/turboacc-source
 
+# Add MosDNS LuCI app and matching data packages.
+find feeds package -path "*/mosdns/Makefile" -delete 2>/dev/null || true
+find feeds package -path "*/v2ray-geodata/Makefile" -delete 2>/dev/null || true
+rm -rf package/mosdns package/v2ray-geodata
+git clone --depth 1 -b v5 https://github.com/sbwml/luci-app-mosdns.git package/mosdns
+git clone --depth 1 https://github.com/sbwml/v2ray-geodata.git package/v2ray-geodata
+
 # Add custom packages.
 rm -rf package/luci-app-openclash package/easytier package/luci-theme-material3 package/luci-theme-design package/luci-theme-aurora package/luci-theme-argon package/luci-app-argon-config package/luci-app-gecoosac
 git clone --depth 1 https://github.com/vernesong/OpenClash.git package/luci-app-openclash
