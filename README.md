@@ -30,12 +30,14 @@ scripts/diy-part2.sh                     feeds 安装后、defconfig 前执行
 
 默认配置用于 x86_64 设备旁路由：
 
-- Web 管理地址：`192.168.1.2`
+- Web 管理地址：`192.168.1.5`
 - 登录账号：`root`
 - 登录密码：`root`
 - LAN 网关/DNS：`192.168.1.1`
 - LAN DHCP：默认关闭，避免和主路由冲突
+- IPv6：默认关闭 DHCPv6/RA/NDP，并禁用 `odhcpd`
 - x86_64 根分区大小：`4096 MB`
+- `/root/login.sh`：服务器本地存在 `/home/xhy200606/Openwrt/login.sh` 时，编译会自动复制到固件的 `/root/login.sh`，权限为 `700`
 
 默认集成插件：
 
@@ -102,7 +104,8 @@ echo "src-git helloworld https://github.com/fw876/helloworld" >> feeds.conf.defa
 修改默认 IP：编辑 `scripts/diy-part2.sh`。
 
 ```bash
-sed -i 's/192.168.1.1/192.168.1.2/g' package/base-files/files/bin/config_generate
+LAN_IP="${LAN_IP:-192.168.1.5}"
+sed -i "s/192.168.1.1/${LAN_IP}/g" package/base-files/files/bin/config_generate
 ```
 
 添加软件包：编辑对应的 `.config`，例如：

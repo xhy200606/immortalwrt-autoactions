@@ -14,6 +14,24 @@ sed -i 's|^root:[^:]*:|root:$1$fShxqZPK$GIpLusJDY9SqOOD0k8IEL.:|' package/base-f
 sed -i "s|DISTRIB_REVISION='.*'|DISTRIB_REVISION='R$(date +%Y.%m.%d)'|g" package/base-files/files/etc/openwrt_release
 echo "DISTRIB_SOURCECODE='immortalwrt'" >>package/base-files/files/etc/openwrt_release
 
+# Install optional local login script into firmware root home.
+# Keep the script outside Git because it may contain private account data.
+LOGIN_SH="${LOGIN_SH:-/home/xhy200606/Openwrt/login.sh}"
+if [ ! -f "$LOGIN_SH" ] && [ -f "/Users/chananyah/Documents/Shell/login.sh" ]; then
+    LOGIN_SH="/Users/chananyah/Documents/Shell/login.sh"
+fi
+if [ ! -f "$LOGIN_SH" ] && [ -f "../login.sh" ]; then
+    LOGIN_SH="../login.sh"
+fi
+if [ -f "$LOGIN_SH" ]; then
+    mkdir -p package/base-files/files/root
+    cp "$LOGIN_SH" package/base-files/files/root/login.sh
+    chmod 700 package/base-files/files/root/login.sh
+    echo "Installed login script to /root/login.sh"
+else
+    echo "WARNING: login.sh not found, skipped installing /root/login.sh"
+fi
+
 # Add Turbo ACC patches and packages for OpenWrt 25.12.
 rm -rf package/turboacc package/turboacc-source
 git clone --depth 1 https://github.com/mufeng05/turboacc.git package/turboacc-source
@@ -39,21 +57,38 @@ git clone --depth 1 https://github.com/jerrykuku/luci-app-argon-config.git packa
 git clone --depth 1 https://github.com/laipeng668/luci-app-gecoosac.git package/luci-app-gecoosac
 
 # Set bypass router LAN IP.
-sed -i 's/192.168.1.1/192.168.1.2/g' package/base-files/files/bin/config_generate
+LAN_IP="${LAN_IP:-192.168.1.5}"
+LAN_GATEWAY="${LAN_GATEWAY:-192.168.1.1}"
+sed -i "s/192.168.1.1/${LAN_IP}/g" package/base-files/files/bin/config_generate
 
-# Bypass router defaults: static LAN, gateway/DNS to main router, DHCP disabled.
+# Bypass router defaults: static LAN, gateway/DNS to main router, DHCP and IPv6 disabled.
 mkdir -p package/base-files/files/etc/uci-defaults
-cat > package/base-files/files/etc/uci-defaults/99-bypass-router <<'EOF'
+cat > package/base-files/files/etc/uci-defaults/99-bypass-router <<EOF
 #!/bin/sh
 uci -q batch <<'UCI'
-set network.lan.ipaddr='192.168.1.2'
+set network.lan.ipaddr='${LAN_IP}'
 set network.lan.netmask='255.255.255.0'
-set network.lan.gateway='192.168.1.1'
-set network.lan.dns='192.168.1.1'
+set network.lan.gateway='${LAN_GATEWAY}'
+set network.lan.dns='${LAN_GATEWAY}'
+set network.lan.delegate='0'
+delete network.globals.ula_prefix
+delete network.lan.ip6assign
+delete network.lan.ip6hint
+delete network.lan.ip6ifaceid
 set dhcp.lan.ignore='1'
+set dhcp.lan.dynamicdhcp='0'
+delete dhcp.lan.start
+delete dhcp.lan.limit
+delete dhcp.lan.leasetime
+set dhcp.lan.dhcpv6='disabled'
+set dhcp.lan.ra='disabled'
+set dhcp.lan.ndp='disabled'
+set dhcp.odhcpd.maindhcp='0'
+set dhcp.odhcpd.disabled='1'
 commit network
 commit dhcp
 UCI
+/etc/init.d/odhcpd disable >/dev/null 2>&1 || true
 exit 0
 EOF
 chmod +x package/base-files/files/etc/uci-defaults/99-bypass-router
