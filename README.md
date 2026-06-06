@@ -40,6 +40,7 @@ scripts/diy-part2.sh                     feeds 安装后、defconfig 前执行
 默认集成插件：
 
 - OpenClash：`vernesong/OpenClash`
+- 软件包管理：`luci-app-package-manager`
 - EasyTier：`EasyTier/luci-app-easytier`，包含 `luci-app-easytier` 和 `easytier`
 - Material 3 主题：`KawaiiHachimi/luci-theme-material3`
 - Design 主题：`0x676e67/luci-theme-design`
@@ -56,7 +57,7 @@ scripts/diy-part2.sh                     feeds 安装后、defconfig 前执行
 - 文件管理器：`luci-app-filemanager`
 - MosDNS：`sbwml/luci-app-mosdns`，包含 `luci-app-mosdns` 和 `mosdns`
 - PassWall：`luci-app-passwall`，启用 `Xray`、`SingBox` 和 `V2ray Geodata`
-- UPnP：`luci-app-upnp` 和 `miniupnpd`
+- UPnP：`luci-app-upnp` 和 `miniupnpd-nftables`
 - Watchcat：`luci-app-watchcat`
 - QEMU Guest Agent：`qemu-ga`
 
