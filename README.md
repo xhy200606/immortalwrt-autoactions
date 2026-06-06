@@ -52,6 +52,8 @@ scripts/diy-part2.sh                     feeds 安装后、defconfig 前执行
 - Tailscale：`luci-app-tailscale-community` 和 `tailscale`
 - SmartDNS：`luci-app-smartdns` 和 `smartdns`
 - 集客 AC：`laipeng668/luci-app-gecoosac`
+- Diskman：`luci-app-diskman`
+- Filebrowser：`luci-app-filebrowser`
 - UPnP：`luci-app-upnp` 和 `miniupnpd`
 - Watchcat：`luci-app-watchcat`
 - QEMU Guest Agent：`qemu-ga`
