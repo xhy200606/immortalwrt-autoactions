@@ -47,7 +47,7 @@ scripts/diy-part2.sh                     feeds 安装后、defconfig 前执行
 - Argon 主题：`jerrykuku/luci-theme-argon`
 - Argon 配置：`jerrykuku/luci-app-argon-config`
 - ttyd：`luci-app-ttyd` 和 `ttyd`
-- Turbo ACC：`luci-app-turboacc`
+- Turbo ACC：`mufeng05/turboacc`，适配 OpenWrt `24.10/25.12/snapshot`
 - iStore：`linkease/istore`，包名 `luci-app-store`
 - Tailscale：`luci-app-tailscale-community` 和 `tailscale`
 - SmartDNS：`luci-app-smartdns` 和 `smartdns`
@@ -56,7 +56,7 @@ scripts/diy-part2.sh                     feeds 安装后、defconfig 前执行
 - Watchcat：`luci-app-watchcat`
 - QEMU Guest Agent：`qemu-ga`
 
-> Turbo ACC 在 `openwrt-25.12` 上如果执行 `make defconfig` 后没有保留，通常说明当前 feeds 中没有可用包或依赖不兼容。不要直接套旧版 Turbo ACC 补丁脚本，避免替换 `firewall4`、`nftables`、`libnftnl` 后造成编译或运行问题。
+> Turbo ACC 使用 `mufeng05/turboacc` 的 `add_turboacc.sh` 接入，会按内核版本复制补丁和包。`firewall4` 环境下建议使用 Flow Offloading；Full Cone NAT 选择兼容模式，不建议在 `firewall4` 下启用高性能 Broadcom 模式。
 
 ## 编译其他设备
 

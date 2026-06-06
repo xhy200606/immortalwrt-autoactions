@@ -14,6 +14,12 @@ sed -i 's|^root:[^:]*:|root:$1$fShxqZPK$GIpLusJDY9SqOOD0k8IEL.:|' package/base-f
 sed -i "s|DISTRIB_REVISION='.*'|DISTRIB_REVISION='R$(date +%Y.%m.%d)'|g" package/base-files/files/etc/openwrt_release
 echo "DISTRIB_SOURCECODE='immortalwrt'" >>package/base-files/files/etc/openwrt_release
 
+# Add Turbo ACC patches and packages for OpenWrt 25.12.
+rm -rf package/turboacc package/turboacc-source
+git clone --depth 1 https://github.com/mufeng05/turboacc.git package/turboacc-source
+bash package/turboacc-source/add_turboacc.sh
+rm -rf package/turboacc-source
+
 # Add custom packages.
 rm -rf package/luci-app-openclash package/easytier package/luci-theme-material3 package/luci-theme-design package/luci-theme-aurora package/luci-theme-argon package/luci-app-argon-config package/luci-app-gecoosac
 git clone --depth 1 https://github.com/vernesong/OpenClash.git package/luci-app-openclash
