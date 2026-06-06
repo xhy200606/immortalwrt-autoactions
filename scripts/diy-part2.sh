@@ -57,5 +57,30 @@ UCI
 exit 0
 EOF
 chmod +x package/base-files/files/etc/uci-defaults/99-bypass-router
+
+# SmartDNS defaults: dnsmasq listens on LAN and forwards queries to local SmartDNS.
+cat > package/base-files/files/etc/uci-defaults/98-smartdns-defaults <<'EOF'
+#!/bin/sh
+uci -q show smartdns.@smartdns[0] >/dev/null 2>&1 || uci add smartdns smartdns >/dev/null
+uci -q batch <<'UCI'
+set smartdns.@smartdns[0].enabled='1'
+set smartdns.@smartdns[0].port='6053'
+set smartdns.@smartdns[0].bind='127.0.0.1'
+set smartdns.@smartdns[0].cache_size='32768'
+set smartdns.@smartdns[0].prefetch_domain='1'
+set smartdns.@smartdns[0].serve_expired='1'
+set smartdns.@smartdns[0].dualstack_ip_selection='1'
+set smartdns.@smartdns[0].ipv6_server='0'
+delete dhcp.@dnsmasq[0].server
+set dhcp.@dnsmasq[0].noresolv='1'
+add_list dhcp.@dnsmasq[0].server='127.0.0.1#6053'
+commit smartdns
+commit dhcp
+UCI
+/etc/init.d/smartdns enable
+/etc/init.d/dnsmasq enable
+exit 0
+EOF
+chmod +x package/base-files/files/etc/uci-defaults/98-smartdns-defaults
 #
 # ------------------------------- Main source ends -------------------------------
