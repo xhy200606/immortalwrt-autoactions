@@ -135,6 +135,18 @@ jobs:
           ls -la "$CONFIG_DIR"
           test -s "$CONFIG_FILE"
 
+      - name: Restore private login script
+        env:
+          LOGIN_SH_B64: ${{ secrets.LOGIN_SH_B64 }}
+        run: |
+          if [ -n "$LOGIN_SH_B64" ]; then
+            printf '%s' "$LOGIN_SH_B64" | base64 -d > login.sh
+            chmod 600 login.sh
+            echo "Restored private login script for firmware root home."
+          else
+            echo "LOGIN_SH_B64 secret is not set; /root/login.sh will be skipped."
+          fi
+
       - name: Install dependencies
         timeout-minutes: 20
         env:
