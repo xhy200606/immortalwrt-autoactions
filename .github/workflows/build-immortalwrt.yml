@@ -116,6 +116,7 @@ jobs:
           CONFIG_PACKAGE_ruby-yaml=y
           CONFIG_PACKAGE_unzip=y
           CONFIG_PACKAGE_wget-ssl=y
+          CONFIG_PACKAGE_xz-utils=y
           EOF
           fi
           sed -i 's/^          //' "$CONFIG_FILE"
