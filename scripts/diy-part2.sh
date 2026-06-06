@@ -56,6 +56,13 @@ git clone --depth 1 https://github.com/jerrykuku/luci-theme-argon.git package/lu
 git clone --depth 1 https://github.com/jerrykuku/luci-app-argon-config.git package/luci-app-argon-config
 git clone --depth 1 https://github.com/laipeng668/luci-app-gecoosac.git package/luci-app-gecoosac
 
+# Fix iStore version format for OpenWrt 25.12 APK packaging.
+ISTORE_MAKEFILE="feeds/istore/luci/luci-app-store/Makefile"
+if [ -f "$ISTORE_MAKEFILE" ]; then
+    sed -i "s/^PKG_VERSION:=0\\.1\\.32-1$/PKG_VERSION:=0.1.32/" "$ISTORE_MAKEFILE"
+    sed -i "s/^PKG_RELEASE:=$/PKG_RELEASE:=1/" "$ISTORE_MAKEFILE"
+fi
+
 # Set bypass router LAN IP.
 LAN_IP="${LAN_IP:-192.168.1.5}"
 LAN_GATEWAY="${LAN_GATEWAY:-192.168.1.1}"
